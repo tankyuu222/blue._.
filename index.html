@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>フラッシュカード 自動表示</title>
+<style>body { font-family: sans-serif; margin: 20px; font-size: 14px; line-height: 2; }
+.card { font-size: 12px; margin: 50px; }#startBtn, #foraLink a { font-size: 14px; }#foraLink a { color: blue; text-decoration: underline; }
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+</head>
+<body>
+
+<div id="instruction">
+  これから英字20個を順番にフラッシュカードのように表示しますので、できる限り覚えてください。書いたり声に出して覚えるのはやめてください。<br>
+あとでgoogleフォームにて覚えたものを選択してください。準備ができたら「開始」を押してください。<br>
+【注意点】<br>
+・テストは強制ではありません<br>
+・このテストは回答者の価値観や考えを否定，比較するものではありません<br>
+・回答者名は作成者も閲覧不可です<br>
+・回答内容は私たちの探求にのみ使用し、探求終了後に全てを廃棄します<br>
+・回答結果と集計したものを学校内で発表するほか、学校外で発表をすることがあります<br>
+
+
+</div>
+
+<div id="card" class="card"></div>
+<button id="startBtn">開始</button>
+
+<div id="formLink" style="display:none; margin-top:20px;">
+  <a href="https://docs.google.com/forms/d/1pG20utGjSGL5yE7nPXYbkBnP846w6ZxKvKunSWZc1Jw/viewform" target="_blank">
+    回答フォームへ
+  </a>
+</div>
+
+<script>
+  const allStimuli = [
+    {letter: 'bk', color: '#000055'},
+    {letter: 'dw', color: '#0000aa'},
+    {letter: 'gs', color: '#3333ff'},
+    {letter: 'ih', color: '#6666ff'},
+    {letter: 'kt', color: '#9999ff'},
+    {letter: 'md', color: '#000055'},
+    {letter: 'py', color: '#6666ff'},
+    {letter: 'rz', color: '#9999ff'},
+    {letter: 'sl', color: '#3333ff'},
+    {letter: 'tf', color: '#0000aa'},
+    {letter: 'uj', color: '#000055'},
+    {letter: 'vl', color: '#6666ff'},
+    {letter: 'xw', color: '#9999ff'},
+    {letter: 'yz', color: '#3333ff'},
+    {letter: 'cq', color: '#0000aa'},
+    {letter: 'nh', color: '#000055'},
+    {letter: 'ps', color: '#3333ff'},
+    {letter: 'rt', color: '#9999ff'},
+    {letter: 'wj', color: '#6666ff'},
+    {letter: 'fb', color: '#0000aa'}
+  ];
+
+  const startStimuli = allStimuli.slice(0,2); // ab, cd
+  const endStimuli = allStimuli.slice(4,6);   // ij, kl
+  const middleStimuli = allStimuli.filter(s => !startStimuli.includes(s) && !endStimuli.includes(s));
+  
+  // 中間16個をシャッフル
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+  shuffleArray(middleStimuli);
+  
+  const displaySequence = [...startStimuli, ...middleStimuli, ...endStimuli];
+
+  const cardDiv = document.getElementById('card');
+  const startBtn = document.getElementById('startBtn');
+  let current = 0;
+  let intervalId;
+
+  function showNextCard() {
+    if(current < displaySequence.length){
+      const item = displaySequence[current];
+      cardDiv.textContent = item.letter;
+      cardDiv.style.color = item.color;
+      current++;
+    } else {
+      clearInterval(intervalId);
+      cardDiv.textContent = "表示終了！";
+      document.getElementById('formLink').style.display = 'block';
+    }
+  }
+
+  startBtn.addEventListener('click', () => {
+    startBtn.style.display = 'none';
+    showNextCard();
+    intervalId = setInterval(showNextCard, 2000); // 2秒ごとに表示
+  });
+</script>
+
+</body>
+</html>
